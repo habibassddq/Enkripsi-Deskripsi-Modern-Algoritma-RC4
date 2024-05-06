@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RC4</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0099ff;
+            margin: 0;
+            padding: 0;
+        }
+        h2 {
+            text-align: center;
+            color: black;
+        }
+
+        h4 {
+            text-align: center;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            box-sizing: border-box;
+            border: 5px solid #0099ff;
+            border-radius: 4px;
+            resize: none;
+        }
+        .container {
+    width: 50%;
+    margin: auto;
+    background-color: #616286;
+    padding: 20px;
+    border-radius: 30px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 50px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-start; /* Menempatkan tombol di sebelah kiri */
+}
+
+.button-container button {
+    background-color: #0099ff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 10px; /* Memberikan jarak di antara tombol-tombol */
+}
+
+.button-container button:last-child {
+    margin-right: 0; /* Tidak memberikan jarak pada tombol terakhir */
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+        textarea {
+            resize: vertical;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Encryption Decryption RC4 Algorithm</h2>
+        <label for="plaintext">Input/Output:</label><br>
+        <input type="text" id="plaintext" name="plaintext"><br><br>
+        <label for="key">Encrypt Key:</label><br>
+        <input type="text" id="key" name="key"><br><br>
+        <label for="bit">Bit Amount:</label><br>
+        <input type="number" id="bit" name="bit" min="1" max="16" value="1"><br><br>
+        <div class="button-container">
+            <button onclick="encrypt()">Encryption</button>
+            <button onclick="decrypt()">Decryption</button>
+        </div>
+        <br><br>
+        <label for="ciphertext">Ciphertext/Input:</label><br>
+        <textarea id="ciphertext" name="ciphertext" rows="4" cols="50"></textarea><br><br>
+        <h4>Developed by Muhammad Habib Assiddiqi 227006152</h4>
+    </div>
+    
+
+    <script>
+        function encrypt() {
+            var plaintext = document.getElementById('plaintext').value;
+            var key = document.getElementById('key').value;
+            var bit = parseInt(document.getElementById('bit').value);
+            var ciphertext = RC4(plaintext, key, bit);
+            document.getElementById('ciphertext').value = ciphertext;
+        }
+
+        function decrypt() {
+            var ciphertext = document.getElementById('ciphertext').value;
+            var key = document.getElementById('key').value;
+            var bit = parseInt(document.getElementById('bit').value);
+            var plaintext = RC4(ciphertext, key, bit);
+            document.getElementById('plaintext').value = plaintext;
+        }
+
+        function RC4(input, key, bit) {
+            var s = [];
+            var j = 0;
+            var x;
+            var res = '';
+
+            for (var i = 0; i < Math.pow(2, bit); i++) {
+                s[i] = i;
+            }
+
+            for (i = 0; i < Math.pow(2, bit); i++) {
+                j = (j + s[i] + key.charCodeAt(i % key.length)) % Math.pow(2, bit);
+                // Swap
+                var temp = s[i];
+                s[i] = s[j];
+                s[j] = temp;
+            }
+
+            i = 0;
+            j = 0;
+            for (var n = 0; n < input.length; n++) {
+                i = (i + 1) % Math.pow(2, bit);
+                j = (j + s[i]) % Math.pow(2, bit);
+                // Swap
+                var temp = s[i];
+                s[i] = s[j];
+                s[j] = temp;
+                x = (s[i] + s[j]) % Math.pow(2, bit);
+                res += String.fromCharCode(s[x] ^ input.charCodeAt(n));
+            }
+
+            return res;
+        }
+    </script>
+</body>
+</html>
